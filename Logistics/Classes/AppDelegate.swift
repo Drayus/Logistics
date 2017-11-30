@@ -2,20 +2,29 @@
 //  AppDelegate.swift
 //  Logistics
 //
-//  Created by macbook on 11/1/17.
+//  Created by Daniyal Ansari on 11/1/17.
 //  Copyright © 2017 com.tnb. All rights reserved.
 //
 
 import UIKit
+import Fabric
+import Crashlytics
+import SwiftyJSON
+import SlideMenuControllerSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    
+    var slideMenuController: SlideMenuController?
+    var appMainViewController: AppMainViewController?
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        Fabric.with([Crashlytics.self])
+        
         return true
     }
 
@@ -40,6 +49,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+    
+    class func sharedApplication() -> (AppDelegate){
+        return UIApplication.shared.delegate as! AppDelegate
+    }
+    
+    func setupDashboardWithSlideMenu() {
+        let storyboard = UIStoryboard(name:"AppMain", bundle: nil)
+        let appNavigationController = storyboard.instantiateViewController(withIdentifier: "VersionNavigationController") as! UINavigationController
+        //VersionNavigationController
+        //AppMainNavigationController
+        
+        if self.appMainViewController == nil {
+            self.appMainViewController = storyboard.instantiateViewController(withIdentifier: "AppMainViewController") as? AppMainViewController
+        }
+        
+        self.slideMenuController = SlideMenuController(mainViewController: appNavigationController,rightMenuViewController: self.appMainViewController!)
+        self.window?.rootViewController = self.slideMenuController
+        
+    }
+    
+    func setupOnboardingView() {
+        let storyboard = UIStoryboard(name:"Onboarding", bundle: nil)
+        let onboardingNavigationController = storyboard.instantiateViewController(withIdentifier: "OnboardingNavigationController") as! UINavigationController
+        
+        self.window?.rootViewController = onboardingNavigationController
+    }
+    
 
     func application(_ app: UIApplication, open inputURL: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
         // Ensure the URL is a file URL
@@ -61,7 +97,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         return true
     }
-
-
+    
+    
+    func changeCurrentControllerWith(newController: UIViewController) {
+        self.slideMenuController?.changeMainViewController(newController, close: true)
+    }
+    
 }
 

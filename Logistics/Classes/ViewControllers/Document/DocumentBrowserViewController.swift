@@ -2,7 +2,7 @@
 //  DocumentBrowserViewController.swift
 //  Logistics
 //
-//  Created by macbook on 11/1/17.
+//  Created by Daniyal Ansari on 11/1/17.
 //  Copyright © 2017 com.tnb. All rights reserved.
 //
 
